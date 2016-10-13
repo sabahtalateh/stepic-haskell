@@ -20,64 +20,37 @@ concatMap f = concat . map f
 squares'n'cubes :: Num a => [a] -> [a]
 squares'n'cubes = concatMap (\x -> [x ^ 2, x ^ 3])
 
-perms :: [n] -> [[n]]
-perms [] = [[]]
-perms [x] = [[x]]
-perms [x,y] = [[x, y], [y, x]]
+perms :: [a] -> [[a]]
+perms xs = perms' xs [] [[]]
 
---perms (x : xs) =
---helper :: [t] -> t -> [[t]]
---helper [ ] a    = [[a]]
---helper [z] a    = [[a,z], [z, a]]
---helper xs' @ (x:xs) a = [xs'] ++ helper xs' a
-
-tt :: [a] -> [a] -> [[a]]
---tt xs [] = [xs]
-tt xs [y] = [xs ++ [y]]
-tt [] ys' @ (y:ys) = [ys'] ++ tt [y] ys
-tt xs' @ (x:xs) ys' @ (y:ys) = [xs' ++ ys'] ++ tt (xs' ++ [y]) (ys)
---tt [] [1,2,3]
---[[1,2,3],[1,2,3],[1,2,3]]
+--- Первый аргумент - список для которого надо сгенерировать перестановки (будет уменьшен до пустого списка)
+--- Второй аргумент - пустой список (будет увеличиваться до списка в первом аргументе)
+--- Третий - перестановки на текущем шаге
+perms' :: [a] -> [a] -> [[a]] -> [[a]]
+--- Терминирующее условие - если первый списо кончился возвращаем перестановки
+perms' [] _ per = per
+--- Первый шаг - вставляем на все вохможные места в пустом массиве первый элемент исходного списка
+--- insertElementInEveryPlace [] x = [[x]]
+perms' xs' @ (x : xs) [] per = perms' xs [x] (insertElementInEveryPlace [] x)
+--- Шаг - для всех перестановок вида [[x,y], [y,x]] вставляем на все возможные места в каждой перестановке
+--- текущий элемент (текущий это первый элемент первого списка (мы уменьшаем его в ходе выполнения))
+--- и вызываем эту функцию снова для новых перестановок
+perms' xs' @ (x : xs) ys' @ (y : ys) per = perms' xs (x : ys') (concatMap (\xs -> insertElementInEveryPlace xs x) per)
 
 
---- hhh []
-hhh :: [a] -> [a] -> a -> [[a]]
-hhh xs [] a = [xs ++ [a]]
-hhh [] (y:ys) a = [a : y : ys] ++ hhh [y] ys a
-hhh xs' @ (x:xs) ys' @ (y:ys) a = [xs' ++ [a] ++ ys'] ++ hhh (xs' ++ [y]) ys a
---hhh [] [1,3] 2
---[[2,1,3],[1,2,3],[1,3,2]]
+--- [2,3] 1 = [[1,2,3],[2,1,3],[2,3,1]]
+insertElementInEveryPlace :: [a] -> a -> [[a]]
+insertElementInEveryPlace = insertElementInEveryPlace' []
 
---perms xs @ (x:xs') =
---  let
---    -- понижаем арность задачи
---    subPerms :: [a] -> [[a]]
---    subPerms (a : as) = map (a :) (perms as) -- leads to [[1,2,3], [1,3,2]]
---
---    -- map must do this: [1,2,3] -> [1,2,3], [2,3,1], [3,1,2]
---    walk :: Integral n => [a] -> n -> [[a]]
---    walk (l : ls) 0 = [ls ++ [l]]
---    walk (l : ls) n =
---      let ls' = ls ++ [l]
---      in [ls'] ++ (walk ls' (n - 1))
---      -- map
---  in concatMap subPerms (walk xs (length xs - 1))
-----
---subPerms :: [a] -> [[a]]
---subPerms (a : as) = map (a :) (perms as) -- leads to [[1,2,3], [1,3,2]]
-----
---walk :: Integral n => [a] -> n -> [[a]]
---walk (l : ls) 0 = [ls ++ [l]]
---walk (l : ls) n =
---    let ls' = ls ++ [l]
---    in [ls'] ++ (walk ls' (n - 1))
-
---perms :: [a] -> [[a]]
---perms x = permutations x
---
---import Data.List (delete)
---
---permutations :: Eq a => [a] -> [[a]]
---permutations [] = [[]]
---permutations xs = [ x:ys | x <- xs, ys <- permutations (delete x xs)]
+--- Первый аргумент (список) этой вспомогательной функции при вызове всегда пуст
+--- в ходе выполнения функции элементы из второго списка перетекают
+--- в первый а на каждом шаге между этими списками вставляется третий аргумент
+--- insertElementInEveryPlace' [] [2,3] 1 = [[1,2,3],[2,1,3],[2,3,1]]
+insertElementInEveryPlace' :: [a] -> [a] -> a -> [[a]]
+-- Терминирующее условие - когда второй список кончился мы приклеиваем в конец первого списка третий аргумент
+insertElementInEveryPlace' xs [] a = [xs ++ [a]]
+-- Начальное состояние - первый список пуст
+insertElementInEveryPlace' [] ys' @ (y:ys) a = [a : ys'] ++ insertElementInEveryPlace' [y] ys a
+-- Шаг рекурсии - приклеиваем между списками третий элемент, затем уменьшаем второй список и увеличиваем первый
+insertElementInEveryPlace' xs ys' @ (y:ys) a = [xs ++ [a] ++ ys'] ++ insertElementInEveryPlace' (xs ++ [y]) ys a
 
