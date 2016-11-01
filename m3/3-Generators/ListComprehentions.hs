@@ -14,28 +14,13 @@ z = [(x,y) | x <- [1,2], y <- [1,2]]
 pif3 = [(x,y,z) | x <- [1..20], y <- [1..20], z <- [1..20], x^2 + y^2 == z^2, x <= y]
 
 
-coins = [2,3,7]
+coins :: (Ord a, Num a) => [a]
+coins = [2,3]
 
---change :: (Ord a, Num a) => a -> [[a]]
-change 0 = [[]]
-change n = [x | x <- (genNTimes (arrCount coins)), arrSum x == n]
-
-change' 0 = [[]]
-change' n = [coin:ch | coin <- coins, ch <- change' $ n - 1]
-
-hhh 0 = [[]]
-hhh n = (change' n) : hhh (n - 1)
-
-genNTimes n = concat $ hhh n
-
-arrSum [] = 0
-arrSum (x:xs) = x + arrSum xs
-
-arrCount [] = 0
-arrCount (x:xs) = 1 + arrCount xs
-
---change 0 = [[]]
---change s = [coin:ch | coin <- coins, coin <= s, ch <- (change $ s - coin)]
+change :: (Ord a, Num a) => a -> [[a]]
+change s
+    | s == 0    = [[]]
+    | otherwise = [coin:ch | coin <- coins, coin <= s, ch <- (change  $ s - coin)]
 
 
 
