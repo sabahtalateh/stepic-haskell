@@ -58,3 +58,46 @@ cmp _ Error         = LT
 cmp Info _          = LT
 cmp _ Info          = GT
 
+
+lessThenError :: LogLevel -> Bool
+lessThenError level =
+    case cmp level Error of
+        LT  -> True
+        _   -> False
+
+data Result = Fail | Success
+
+--processData :: SomeData -> String
+--processData d = case  doSomeWork d of
+--    (_,0) -> "Success"
+--    (_,n) -> "Fail: " ++ show n
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
