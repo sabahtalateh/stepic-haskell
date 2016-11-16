@@ -9,12 +9,18 @@ timeToString = formatTime defaultTimeLocale "%a %d %T"
 
 data LogLevel = Error | Warning | Info
 
-data LogEntry = Undefined
+data LogEntry = LogEntry {timestamp :: UTCTime, logLevel :: LogLevel, message :: String}
 
 logLevelToString :: LogLevel -> String
-logLevelToString = undefined
+logLevelToString x = case x of
+    Error   -> "Error"
+    Warning -> "Warning"
+    Info    -> "Info"
 
 logEntryToString :: LogEntry -> String
-logEntryToString = undefined
-
+logEntryToString entry =
+    t ++ ": " ++ l ++ ": " ++ m where
+        t = timeToString        $ timestamp entry
+        l = logLevelToString    $ logLevel  entry
+        m = message entry
 
