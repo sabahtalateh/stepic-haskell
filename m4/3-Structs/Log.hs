@@ -17,7 +17,6 @@ logLevelToString x = case x of
     Warning -> "Warning"
     Info    -> "Info"
 
-
 logEntryToString :: LogEntry -> String
 logEntryToString entry =
     t ++ ": " ++ l ++ ": " ++ m where
