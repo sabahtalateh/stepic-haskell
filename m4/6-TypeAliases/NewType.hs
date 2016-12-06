@@ -25,3 +25,14 @@ ignore (IList _) = "Hello"
 b = ignore undefined
 
 newtype Identity a = Identity {runIdentity :: a} deriving (Eq, Ord)
+
+--newtype A = A a
+--newtype A a b = A a b
+--newtype A = A A A
+--newtype A a = A
+--newtype A = A
+--newtype A = A A +
+--newtype A a = A a +
+--newtype A a b = A a
+--newtype A a = A a a
+--newtype A a b = A b +
