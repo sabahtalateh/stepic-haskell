@@ -35,3 +35,12 @@ instance Num a => Monoid (Product a) where
 y = Product 3 `mappend` Product 4
 
 z = Sum (getProduct $ Product 5 `mappend` Product 5) `mappend`  Sum (getSum $ Sum 4) -- Sum {getSum = 29}
+
+newtype Xor = Xor {getXor :: Bool} deriving Show
+
+instance Monoid Xor where
+    mempty = Xor False
+    (Xor True) `mappend` (Xor True) = Xor False
+    (Xor False) `mappend` (Xor True) = Xor True
+    (Xor True) `mappend` (Xor False) = Xor True
+    (Xor False) `mappend` (Xor False) = Xor False
