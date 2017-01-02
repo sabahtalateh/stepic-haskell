@@ -31,10 +31,38 @@ mothers = [
         ("Ann", "Jane"),
         ("John", "Alice"),
         ("Jane", "Dorothy"),
-        ("Alice", "Maary")
+        ("Alice", "Mary")
     ]
 
 getM, getF :: Name -> Maybe Name
 getM person = lookup person mothers
 getF person = lookup person fathers
+
+billsGrandGrandMotherByFatherLine0 = getF "Bill" >>= getM >>= getM
+
+billsGrandGrandMotherByFatherLine1 = do
+    let name = "Bill"
+    f   <- getF name
+    gm  <- getM f
+    ggm <- getM gm
+    return ggm
+
+billsGrandGrandMotherByFatherLine2 = do {f <- getF "Bill"; gm <- getM f; getM gm}
+
+-- Ищем бабушек
+granmas :: Name -> Maybe (Name, Name)
+granmas person = do
+    m   <- getM person
+    gmm <- getM m
+    f   <- getF person
+    gmf <- getM f
+    return (gmm, gmf)
+
+billGMs = granmas "Bill"
+-- Хоть у John и есть 1 бабушка но всё равно Nothing
+johnGMs = granmas "John"
+
+
+
+
 
