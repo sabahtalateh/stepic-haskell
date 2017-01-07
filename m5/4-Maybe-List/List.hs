@@ -32,5 +32,8 @@ nextPositionsN b n pred
   | n == 0      = filter pred [b]
   | otherwise   = do
     nextPositions   <- nextPositions b
-    rest             <- nextPositionsN nextPositions (n-1) pred
+    rest            <- nextPositionsN nextPositions (n-1) pred
     return rest
+
+
+
